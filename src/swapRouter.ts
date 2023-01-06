@@ -110,11 +110,23 @@ export abstract class SwapRouter {
       : validateAndParseAddress(options.recipient)
 
     if (trade.tradeType === TradeType.EXACT_INPUT) {
-      const exactInputParams = [amountIn, performAggregatedSlippageCheck ? 0 : amountOut, path, recipient, options.deadlineOrPreviousBlockhash]
+      const exactInputParams = [
+        amountIn,
+        performAggregatedSlippageCheck ? 0 : amountOut,
+        path,
+        recipient,
+        options.deadlineOrPreviousBlockhash,
+      ]
       console.log({ exactInputParams })
       if (trade.inputAmount.currency.isNative) {
-        return SwapRouter.INTERFACE.encodeFunctionData('swapExactETHForTokens', [performAggregatedSlippageCheck ? 0 : amountOut, path, recipient, options.deadlineOrPreviousBlockhash])
-      } if (trade.outputAmount.currency.isNative) {
+        return SwapRouter.INTERFACE.encodeFunctionData('swapExactETHForTokens', [
+          performAggregatedSlippageCheck ? 0 : amountOut,
+          path,
+          recipient,
+          options.deadlineOrPreviousBlockhash,
+        ])
+      }
+      if (trade.outputAmount.currency.isNative) {
         return SwapRouter.INTERFACE.encodeFunctionData('swapExactTokensForETH', exactInputParams)
       } else {
         return SwapRouter.INTERFACE.encodeFunctionData('swapExactTokensForTokens', exactInputParams)
@@ -123,7 +135,8 @@ export abstract class SwapRouter {
       const exactOutputParams = [amountOut, amountIn, path, recipient, options.deadlineOrPreviousBlockhash]
       if (trade.inputAmount.currency.isNative) {
         return SwapRouter.INTERFACE.encodeFunctionData('swapETHForExactTokens', exactOutputParams)
-      } if (trade.outputAmount.currency.isNative) {
+      }
+      if (trade.outputAmount.currency.isNative) {
         return SwapRouter.INTERFACE.encodeFunctionData('swapTokensForExactETH', exactOutputParams)
       } else {
         return SwapRouter.INTERFACE.encodeFunctionData('swapTokensForExactTokens', exactOutputParams)
@@ -173,7 +186,7 @@ export abstract class SwapRouter {
             trades.tradeType == TradeType.EXACT_INPUT ? inputAmount : outputAmount,
             trades.tradeType
           )
-        )        
+        )
       }
       trades = individualTrades
     }
